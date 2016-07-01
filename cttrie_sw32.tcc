@@ -9,161 +9,159 @@
     -> decltype(fne()) \
   { \
     switch (ch) { \
-      XBLOCK(XSUB3,;); \
+      XBLOCK(XSUB3,XSEMIC); \
     } \
     return fne(); \
   }
 
-#define XCOMMA ,
+#define XCOMMA() ,
+#define XSEMIC() ;
 #define XSUB1(p) int Char ## p,typename Next ## p
 #define XSUB2(p) Transition<Char ## p,Next ## p>
 #define XSUB3(p) case Char ## p: return checkTrie(Next ## p(),str,(FnE&&)fne,(Fns&&)fns...)
 
-#define XBLOCK(x,sep) x(00) sep x(01)
+#define XCAT(x,p,q) x(p ## q)
+#define XBLOCK0(p,x,sep) XCAT(x,p,0)
+#define XBLOCK1(p,x,sep) XBLOCK0(p,x,sep) sep() XCAT(x,p,1)
+#define XBLOCK2(p,x,sep) XBLOCK1(p,x,sep) sep() XCAT(x,p,2)
+#define XBLOCK3(p,x,sep) XBLOCK2(p,x,sep) sep() XCAT(x,p,3)
+#define XBLOCK4(p,x,sep) XBLOCK3(p,x,sep) sep() XCAT(x,p,4)
+#define XBLOCK5(p,x,sep) XBLOCK4(p,x,sep) sep() XCAT(x,p,5)
+#define XBLOCK6(p,x,sep) XBLOCK5(p,x,sep) sep() XCAT(x,p,6)
+#define XBLOCK7(p,x,sep) XBLOCK6(p,x,sep) sep() XCAT(x,p,7)
+
+#define XXBLOCK(x,sep)
+#define XXNUM 0
+/* unused
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK0(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02)
+*/
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK1(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK2(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK3(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK4(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK5(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK6(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK7(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09)
+#undef XXNUM
+#undef XXBLOCK
+
+#define XXBLOCK(x,sep) XBLOCK7(0,x,sep) sep()
+#define XXNUM 1
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK0(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK1(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK2(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK3(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK4(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK5(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK6(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK7(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17)
+#undef XXNUM
+#undef XXBLOCK
+
+#define XXBLOCK(x,sep) XBLOCK7(0,x,sep) sep() XBLOCK7(1,x,sep) sep()
+#define XXNUM 2
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK0(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK1(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK2(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK3(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK4(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK5(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK6(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK7(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24) sep x(25)
+#undef XXNUM
+#undef XXBLOCK
+
+#define XXBLOCK(x,sep) XBLOCK7(0,x,sep) sep() XBLOCK7(1,x,sep) sep() XBLOCK7(2,x,sep) sep()
+#define XXNUM 3
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK0(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24) sep x(25) sep x(26)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK1(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24) sep x(25) sep x(26) sep x(27)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK2(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24) sep x(25) sep x(26) sep x(27) sep x(28)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK3(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24) sep x(25) sep x(26) sep x(27) sep x(28) sep x(29)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK4(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24) sep x(25) sep x(26) sep x(27) sep x(28) sep x(29) sep x(30)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK5(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
-#define XBLOCK(x,sep) x(00) sep x(01) sep x(02) sep x(03) sep x(04) sep x(05) sep x(06) sep x(07) sep \
-                      x(08) sep x(09) sep x(10) sep x(11) sep x(12) sep x(13) sep x(14) sep x(15) sep \
-                      x(16) sep x(17) sep x(18) sep x(19) sep x(20) sep x(21) sep x(22) sep x(23) sep \
-                      x(24) sep x(25) sep x(26) sep x(27) sep x(28) sep x(29) sep x(30) sep x(31)
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK6(XXNUM,x,sep)
 XTMPLATE
 #undef XBLOCK
+#define XBLOCK(x,sep) XXBLOCK(x,sep) XBLOCK7(XXNUM,x,sep)
+XTMPLATE
+#undef XBLOCK
+#undef XXNUM
+#undef XXBLOCK
+
+#undef XBLOCK7
+#undef XBLOCK6
+#undef XBLOCK5
+#undef XBLOCK4
+#undef XBLOCK3
+#undef XBLOCK2
+#undef XBLOCK1
+#undef XBLOCK0
+#undef XCAT
 
 #undef XSUB3
 #undef XSUB2
 #undef XSUB1
+#undef XSEMIC
 #undef XCOMMA
 #undef XTMPLATE
 
