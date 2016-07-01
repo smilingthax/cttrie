@@ -27,6 +27,6 @@ clean:
 %.d: %.cpp
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
 
-$(EXEC): %: %.cpp
-	$(CXX) -o $@ $(CPPFLAGS) $(CXXFLAGS) $<
+$(EXEC): %: %.o
+	$(CXX) -o $@ $< $(LDFLAGS)
 
