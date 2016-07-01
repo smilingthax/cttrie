@@ -17,7 +17,7 @@ Usage:
 ```
 
 * compile with optimization enabled!
-* cases may return a value  
+* cases may return a value (see e.g. test_cttrie.cpp)  
   -> return types must match! (deduced from error case)
 
 
