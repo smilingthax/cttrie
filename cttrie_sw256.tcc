@@ -7,14 +7,6 @@
   X16(0) SEP X16(1) SEP X16(2) SEP X16(3) SEP X16(4) SEP X16(5) SEP X16(6) SEP X16(7) SEP \
   X16(8) SEP X16(9) SEP X16(a) SEP X16(b) SEP X16(c) SEP X16(d) SEP X16(e) SEP X16(f)
 
-typedef type_array<
-#define X(p,q) nil
-#define SEP ,
-  XBLOCK
-#undef SEP
-#undef X
-  > base_array;
-
 // or:  typedef decltype(make_index_sequence<256>()) base_seq;
 typedef index_sequence<
 #define X(p,q) 0x ## p ## q
@@ -23,6 +15,8 @@ typedef index_sequence<
 #undef SEP
 #undef X
   > base_seq;
+
+template <typename...> struct type_array {};
 
 // requires TrieNode to multiple inherit all Transitions
 template <int Char,typename Next>

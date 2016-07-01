@@ -32,8 +32,6 @@ template <typename... Transitions>
 struct TrieNode : Transitions... {};
 
 namespace detail {
-  template <typename...> struct type_array {};
-
   struct nil {};
 
   template <bool B> using Sfinae=char(*)[2*B-1]; // just [B] does not work with MSVC and clang; MSVC still does weird things with [2*B-1]...
