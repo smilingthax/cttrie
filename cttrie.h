@@ -20,6 +20,7 @@
 #include "cstr.h"
 #include "getindex.h"
 #include "stringview.h"
+#include <type_traits>
 
 namespace CtTrie {
 
@@ -28,15 +29,17 @@ using pack_tools::detail::int_c;
 template <int Char,typename Next>
 struct Transition {};
 
+// multiple inheritance required for cttrie_sw256 ...
 template <typename... Transitions>
 struct TrieNode : Transitions... {};
 
 namespace detail {
   struct nil {};
 
-  template <bool B> using Sfinae=char(*)[2*B-1]; // just [B] does not work with MSVC and clang; MSVC still does weird things with [2*B-1]...
-  // template <bool B> using Sfinae=typename std::enable_if<B>::type;
+  // template <bool B> using Sfinae=char(*)[2*B-1]; // just [B] does not work with MSVC and clang; MSVC still does weird things with [2*B-1]...
+  template <bool B> using Sfinae=typename std::enable_if<B>::type;
 
+  // not available in c++11
   template <unsigned int... Is>
   struct index_sequence {};
 
@@ -98,8 +101,21 @@ namespace detail {
     -> decltype(trieAdd<I,String0>(makeTrie<I+1>(nil(),Strings()...)))
   { return {}; }
 
+#if 1
   #include "cttrie_sw32.tcc"
   #include "cttrie_sw256.tcc"
+#else
+  template <typename... Transitions,typename FnE,typename... Fns>
+  auto Switch(unsigned char ch,stringview str,TrieNode<Transitions...>,FnE&& fne,Fns&&... fns)
+    -> decltype(fne())
+  {
+    switch (ch) {
+    { case (Transitions::Char):
+        return checkTrie(Transitions::Next(),str,(FnE&&)fne,(Fns&&)fns...); }...
+    }
+    return fne();
+  }
+#endif
 
   // handle trivial cases already here
   template <typename FnE,typename... Fns>

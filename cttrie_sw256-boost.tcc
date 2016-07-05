@@ -1,18 +1,13 @@
 
-#define X16(p) \
-  X(p,0) SEP X(p,1) SEP X(p,2) SEP X(p,3) SEP X(p,4) SEP X(p,5) SEP X(p,6) SEP X(p,7) SEP \
-  X(p,8) SEP X(p,9) SEP X(p,a) SEP X(p,b) SEP X(p,c) SEP X(p,d) SEP X(p,e) SEP X(p,f)
+#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/punctuation/comma_if.hpp>
 
-#define XBLOCK \
-  X16(0) SEP X16(1) SEP X16(2) SEP X16(3) SEP X16(4) SEP X16(5) SEP X16(6) SEP X16(7) SEP \
-  X16(8) SEP X16(9) SEP X16(a) SEP X16(b) SEP X16(c) SEP X16(d) SEP X16(e) SEP X16(f)
+#define XREP 256
 
 // or:  typedef decltype(make_index_sequence<256>()) base_seq;
 typedef index_sequence<
-#define X(p,q) 0x ## p ## q
-#define SEP ,
-  XBLOCK
-#undef SEP
+#define X(z,n,data) BOOST_PP_COMMA_IF(n) n                 // or: just use  X() n   +   BOOST_PP_ENUM(XREP,X,dummy)
+  BOOST_PP_REPEAT(XREP,X,dummy)
 #undef X
   > base_seq;
 
@@ -32,10 +27,10 @@ constexpr auto mkidx(TrieNode trie,index_sequence<Is...>)
   -> type_array<decltype(select<Is>(trie))...>
 { return {}; }
 
+// c++17: constexpr if
 template <typename T> struct is_nil { static constexpr bool value = false; }; // ... : false_type
 template <> struct is_nil<nil> { static constexpr bool value = true; }; // or: std::is_same
 
-// c++17: constexpr if
 template <typename FnE,typename... Fns> // never called, but must be instantiable ...
 constexpr auto checkTrie(nil,stringview str,FnE&& fne,Fns&&... fns)
   -> decltype(fne())
@@ -44,26 +39,20 @@ constexpr auto checkTrie(nil,stringview str,FnE&& fne,Fns&&... fns)
 }
 
 template <
-#define X(p,q) typename A ## p ## q
-#define SEP ,
-  XBLOCK,
-#undef SEP
+#define X(z,n,data) data ## n,
+  BOOST_PP_REPEAT(XREP,X,typename A)
 #undef X
   typename FnE,typename... Fns>
 /*constexpr*/ auto Switch256(unsigned char ch,stringview str,type_array<
-#define X(p,q) A ## p ## q
-#define SEP ,
-  XBLOCK
-#undef SEP
+#define X(z,n,data) BOOST_PP_COMMA_IF(n) data ## n
+  BOOST_PP_REPEAT(XREP,X,A)
 #undef X
   >,FnE&& fne,Fns&&... fns)
   -> decltype(fne())
 {
   switch (ch) {
-#define X(p,q) case 0x ## p ## q : if (is_nil<A ## p ## q>::value) break; return checkTrie(A ## p ## q(),str,(FnE&&)fne,(Fns&&)fns...);
-#define SEP
-    XBLOCK
-#undef SEP
+#define X(z,n,data) case n : if (is_nil<data ## n>::value) break; return checkTrie(data ## n (),str,(FnE&&)fne,(Fns&&)fns...);
+  BOOST_PP_REPEAT(XREP,X,A)
 #undef X
   }
   return fne();
@@ -76,6 +65,5 @@ constexpr auto Switch(unsigned char ch,stringview str,TrieNode trie,FnE&& fne,Fn
   return Switch256(ch,str,mkidx(trie,base_seq()),(FnE&&)fne,(Fns&&)fns...);
 }
 
-#undef X16
-#undef XBLOCK
+#undef XREP
 

@@ -1,6 +1,8 @@
 #ifndef _CSTR_H
 #define _CSTR_H
 
+// C++2x: std::fixed_string ?
+
 template <unsigned char... Chars>
 struct string_t {
   static constexpr unsigned int size() {
