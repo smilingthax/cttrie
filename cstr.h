@@ -24,7 +24,7 @@ struct make_string_t<Str,0,Chars...> { typedef string_t<Chars...> type; };
 
 #define CSTR(str) []{ \
     struct Str { const char *chars = str; }; \
-    return detail::make_string_t<Str,sizeof(str)>::type(); \
+    return ::detail::make_string_t<Str,sizeof(str)>::type(); \
   }()
 
 #endif

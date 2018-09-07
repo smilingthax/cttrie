@@ -2,12 +2,13 @@
 #define _STRINGVIEW_H
 
 #include <cstring>
+#include <utility>
 
 struct stringview {
   template <unsigned int N>
   constexpr stringview(const char (&ar)[N]) : begin(ar),size((ar[N-1]==0) ? N-1 : N) {}  // strips trailing \0     // implicit
 
-  template <typename String,typename Sfinae=decltype(((String*)0)->c_str(),((String*)0)->size())>
+  template <typename String,typename Sfinae=decltype(std::declval<String>().c_str(),std::declval<String>().size())>
   constexpr stringview(String&& str) : begin(str.c_str()),size(str.size()) {}
 
   stringview(const char *begin) : begin(begin),size(std::strlen(begin)) {}
