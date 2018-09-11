@@ -128,7 +128,7 @@ namespace detail {
   constexpr auto checkTrie(TrieNode<Transition<Char,Next>> trie,stringview str,FnE&& fne,Fns&&... fns)
     -> decltype(fne())
   {
-    return (!str.empty()) ? checkTrie(Next(),str.substr(1),(FnE&&)fne,(Fns&&)fns...) : fne();
+    return (!str.empty() && (*str==Char)) ? checkTrie(Next(),str.substr(1),(FnE&&)fne,(Fns&&)fns...) : fne();
   }
 
   template <typename... Transitions,typename FnE,typename... Fns>
