@@ -17,9 +17,10 @@ Usage:
 ```
 
 * compile with optimization enabled!
-* cases may return a value (see e.g. test_cttrie.cpp)  
+* cases may return a value (see e.g. test_cttrie.cpp)
   -> return types must match! (deduced from error case)
 
+#### => [Slides](https://smilingthax.github.io/slides/cttrie/)
 
 Copyright (c) 2016 Tobias Hoffmann
 
