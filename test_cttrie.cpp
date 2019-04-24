@@ -1,12 +1,13 @@
 #include "cttrie.h"
 #include <stdio.h>
+#include "lc_stringview.h"
 
 int main(int argc,char **argv)
 {
   const char *str=(argc>1) ? argv[1] : "abc";
 
   printf("%d\n",
-    TRIE(str) return -1;
+    TRIE2(lc_stringview,str) return -1;
     CASE("abc") return 0;
     CASE("bcd") return 1;
     ENDTRIE

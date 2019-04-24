@@ -29,6 +29,7 @@ struct stringview {
              (start<size) ? size-start : 0 };
   }
 
+  // (not actually used by cttrie)
   constexpr stringview substr(unsigned int start,unsigned int len) const {
     return { begin+start,
              (start<size) ?
