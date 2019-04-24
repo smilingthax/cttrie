@@ -1,9 +1,9 @@
 
 #define XTMPLATE \
-  template < \
+  template <typename Stringview, \
     XBLOCK(XSUB1,XCOMMA), \
     typename FnE,typename... Fns> \
-  auto Switch(unsigned char ch,stringview str,TrieNode< \
+  auto Switch(unsigned char ch,Stringview&& str,TrieNode< \
     XBLOCK(XSUB2,XCOMMA) \
     >,FnE&& fne,Fns&&... fns) \
     -> decltype(fne()) \
@@ -18,7 +18,7 @@
 #define XSEMIC() ;
 #define XSUB1(p) int Char ## p,typename Next ## p
 #define XSUB2(p) Transition<Char ## p,Next ## p>
-#define XSUB3(p) case Char ## p: return checkTrie(Next ## p(),str,(FnE&&)fne,(Fns&&)fns...)
+#define XSUB3(p) case Char ## p: return checkTrie(Next ## p(),(Stringview&&)str,(FnE&&)fne,(Fns&&)fns...)
 
 #define XCAT(x,p,q) x(p ## q)
 #define XBLOCK0(p,x,sep) XCAT(x,p,0)

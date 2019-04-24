@@ -105,70 +105,70 @@ namespace detail {
   #include "cttrie_sw32.tcc"
   #include "cttrie_sw256.tcc"
 #else
-  template <typename... Transitions,typename FnE,typename... Fns>
-  auto Switch(unsigned char ch,stringview str,TrieNode<Transitions...>,FnE&& fne,Fns&&... fns)
+  template <typename Stringview,typename... Transitions,typename FnE,typename... Fns>
+  auto Switch(unsigned char ch,Stringview&& str,TrieNode<Transitions...>,FnE&& fne,Fns&&... fns)
     -> decltype(fne())
   {
     switch (ch) {
     { case (Transitions::Char):
-        return checkTrie(Transitions::Next(),str,(FnE&&)fne,(Fns&&)fns...); }...
+        return checkTrie(Transitions::Next(),(Stringview&&)str,(FnE&&)fne,(Fns&&)fns...); }...
     }
     return fne();
   }
 #endif
 
   // handle trivial cases already here
-  template <typename FnE,typename... Fns>
-  constexpr auto checkTrie(TrieNode<> trie,stringview str,FnE&& fne,Fns&&... fns) // possible via Transition<-1>
+  template <typename Stringview,typename FnE,typename... Fns>
+  constexpr auto checkTrie(TrieNode<> trie,Stringview&& str,FnE&& fne,Fns&&... fns) // possible via Transition<-1>
     -> decltype(fne())
   {
     return fne();
   }
-  template <int Char,typename Next,typename FnE,typename... Fns,typename =Sfinae<(Char>=0)>>
-  constexpr auto checkTrie(TrieNode<Transition<Char,Next>> trie,stringview str,FnE&& fne,Fns&&... fns)
+  template <int Char,typename Next,typename Stringview,typename FnE,typename... Fns,typename =Sfinae<(Char>=0)>>
+  constexpr auto checkTrie(TrieNode<Transition<Char,Next>> trie,Stringview&& str,FnE&& fne,Fns&&... fns)
     -> decltype(fne())
   {
     return (!str.empty() && (*str==Char)) ? checkTrie(Next(),str.substr(1),(FnE&&)fne,(Fns&&)fns...) : fne();
   }
 
-  template <typename... Transitions,typename FnE,typename... Fns>
-  constexpr auto checkTrie(TrieNode<Transitions...> trie,stringview str,FnE&& fne,Fns&&... fns)
+  template <typename... Transitions,typename Stringview,typename FnE,typename... Fns>
+  constexpr auto checkTrie(TrieNode<Transitions...> trie,Stringview&& str,FnE&& fne,Fns&&... fns)
     -> decltype(fne())
   {
     return (!str.empty()) ? Switch(*str,str.substr(1),trie,(FnE&&)fne,(Fns&&)fns...) : fne();
   }
 
-  template <unsigned int Index,typename... Transitions,typename FnE,typename... Fns>
-  constexpr auto checkTrie(TrieNode<Transition<-1,int_c<Index>>,Transitions...>,stringview str,FnE&& fne,Fns&&... fns)
+  template <unsigned int Index,typename... Transitions,typename Stringview,typename FnE,typename... Fns>
+  constexpr auto checkTrie(TrieNode<Transition<-1,int_c<Index>>,Transitions...>,Stringview&& str,FnE&& fne,Fns&&... fns)
     -> decltype(fne())
   {
     return (str.empty()) ? pack_tools::get_index<Index>((Fns&&)fns...)()
-                         : checkTrie(TrieNode<Transitions...>(),str,(FnE&&)fne,(Fns&&)fns...);
+                         : checkTrie(TrieNode<Transitions...>(),(Stringview&&)str,(FnE&&)fne,(Fns&&)fns...);
   }
 
-  template <unsigned int... Is,typename ArgE,typename... Args>
-  constexpr auto doTrie(index_sequence<Is...>,stringview str,ArgE&& argE,Args&&... args)
+  template <unsigned int... Is,typename Stringview,typename ArgE,typename... Args>
+  constexpr auto doTrie(index_sequence<Is...>,Stringview&& str,ArgE&& argE,Args&&... args)
     -> decltype(argE())
   {
     return checkTrie(makeTrie<0>(nil(),pack_tools::get_index<(2*Is)>((Args&&)args...)...),
-                     str,(ArgE&&)argE,
+                     (Stringview&&)str,(ArgE&&)argE,
                      pack_tools::get_index<(2*Is+1)>((Args&&)args...)...);
   }
 
 } // namespace detail
 
-template <typename TrieNode,typename FnE,typename... Fns>
-constexpr auto checkTrie(TrieNode trie,stringview str,FnE&& fne,Fns&&... fns)
+template <typename TrieNode,typename Stringview,typename FnE,typename... Fns>
+constexpr auto checkTrie(TrieNode trie,Stringview&& str,FnE&& fne,Fns&&... fns)
   -> decltype(fne())
 {
-  return detail::checkTrie(trie,str,(FnE&&)fne,(Fns&&)fns...); // also used for adl dance
+  return detail::checkTrie(trie,(Stringview&&)str,(FnE&&)fne,(Fns&&)fns...); // also used for adl dance
 }
 
-template <typename ArgE,typename... Args>
-constexpr auto doTrie(stringview str,ArgE&& argE,Args&&... args)
+template <typename Stringview,typename ArgE,typename... Args>
+constexpr auto doTrie(Stringview&& str,ArgE&& argE,Args&&... args)
   -> decltype(argE())
 {
-  return detail::doTrie(detail::make_index_sequence<sizeof...(args)/2>(),str,(ArgE&&)argE,(Args&&)args...);
+  return detail::doTrie(detail::make_index_sequence<sizeof...(args)/2>(),(Stringview&&)str,(ArgE&&)argE,(Args&&)args...);
 }
 
 // Strings must be string_t
@@ -179,8 +179,9 @@ constexpr auto makeTrie(Strings... strs)
 
 } // namespace CtTrie
 
-#define TRIE(str)  CtTrie::doTrie((str),[&]{
-#define CASE(str)  },CSTR(str),[&]{
-#define ENDTRIE    })
+#define TRIE(str)  TRIE2(stringview,str)
+#define TRIE2(sv,str)  CtTrie::doTrie<sv>((str),[&]{
+#define CASE(str)      },CSTR(str),[&]{
+#define ENDTRIE        })
 
 #endif

@@ -36,21 +36,21 @@ template <typename T> struct is_nil { static constexpr bool value = false; }; //
 template <> struct is_nil<nil> { static constexpr bool value = true; }; // or: std::is_same
 
 // c++17: constexpr if
-template <typename FnE,typename... Fns> // never called, but must be instantiable ...
-constexpr auto checkTrie(nil,stringview str,FnE&& fne,Fns&&... fns)
+template <typename Stringview,typename FnE,typename... Fns> // never called, but must be instantiable ...
+constexpr auto checkTrie(nil,Stringview&& str,FnE&& fne,Fns&&... fns)
   -> decltype(fne())
 {
   return fne();
 }
 
-template <
+template <typename Stringview,
 #define X(p,q) typename A ## p ## q
 #define SEP ,
   XBLOCK,
 #undef SEP
 #undef X
   typename FnE,typename... Fns>
-/*constexpr*/ auto Switch256(unsigned char ch,stringview str,type_array<
+/*constexpr*/ auto Switch256(unsigned char ch,Stringview&& str,type_array<
 #define X(p,q) A ## p ## q
 #define SEP ,
   XBLOCK
@@ -60,7 +60,7 @@ template <
   -> decltype(fne())
 {
   switch (ch) {
-#define X(p,q) case 0x ## p ## q : if (is_nil<A ## p ## q>::value) break; return checkTrie(A ## p ## q(),str,(FnE&&)fne,(Fns&&)fns...);
+#define X(p,q) case 0x ## p ## q : if (is_nil<A ## p ## q>::value) break; return checkTrie(A ## p ## q(),(Stringview &&)str,(FnE&&)fne,(Fns&&)fns...);
 #define SEP
     XBLOCK
 #undef SEP
@@ -69,11 +69,11 @@ template <
   return fne();
 }
 
-template <typename TrieNode,typename FnE,typename... Fns>
-constexpr auto Switch(unsigned char ch,stringview str,TrieNode trie,FnE&& fne,Fns&&... fns)
+template <typename Stringview,typename TrieNode,typename FnE,typename... Fns>
+constexpr auto Switch(unsigned char ch,Stringview&& str,TrieNode trie,FnE&& fne,Fns&&... fns)
   -> decltype(fne())
 {
-  return Switch256(ch,str,mkidx(trie,base_seq()),(FnE&&)fne,(Fns&&)fns...);
+  return Switch256(ch,(Stringview&&)str,mkidx(trie,base_seq()),(FnE&&)fne,(Fns&&)fns...);
 }
 
 #undef X16
